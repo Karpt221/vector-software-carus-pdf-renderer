@@ -1,3 +1,3 @@
-package com.example.carus.pdfrenderer.dto;
+package com.example.carus.pdfrenderer.dtos;
 
 public record PdfRendererRequestDto(String content) { }
