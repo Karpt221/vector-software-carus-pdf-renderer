@@ -53,10 +53,11 @@
             <version>1.17.2</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.xhtmlrenderer/flying-saucer-pdf -->
         <dependency>
             <groupId>org.xhtmlrenderer</groupId>
             <artifactId>flying-saucer-pdf</artifactId>
-            <version>9.6.0</version>
+            <version>10.0.0</version>
         </dependency>
 	</dependencies>
 

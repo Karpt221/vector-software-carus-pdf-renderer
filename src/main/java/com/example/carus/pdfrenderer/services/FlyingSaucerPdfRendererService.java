@@ -9,9 +9,10 @@ import org.xhtmlrenderer.layout.SharedContext;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
 import java.io.*;
+import java.nio.file.FileSystems;
 
 @Service
-public class PdfRendererService implements PdfRenderer {
+public class FlyingSaucerPdfRendererService implements PdfRenderer {
 
     public byte[] renderPdf(Document document) {
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
@@ -19,8 +20,10 @@ public class PdfRendererService implements PdfRenderer {
             SharedContext sharedContext = renderer.getSharedContext();
             sharedContext.setPrint(true);
             sharedContext.setInteractive(false);
-
-            renderer.setDocument(document, "");
+            String baseUrl = FileSystems.getDefault()
+                    .getPath("src/main/resources/static/")
+                    .toUri().toURL().toString();
+            renderer.setDocument(document, baseUrl);
             renderer.layout();
             renderer.createPDF(outputStream);
 

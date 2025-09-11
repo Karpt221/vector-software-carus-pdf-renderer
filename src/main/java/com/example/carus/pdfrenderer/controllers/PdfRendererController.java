@@ -4,8 +4,9 @@ import com.example.carus.pdfrenderer.dtos.PdfRendererErrorResponseDto;
 import com.example.carus.pdfrenderer.dtos.PdfRendererRequestDto;
 import com.example.carus.pdfrenderer.exceptions.HtmlValidationException;
 import com.example.carus.pdfrenderer.exceptions.PdfGenerationException;
+import com.example.carus.pdfrenderer.interfaces.HtmlValidator;
+import com.example.carus.pdfrenderer.interfaces.PdfRenderer;
 import com.example.carus.pdfrenderer.services.HtmlValidationService;
-import com.example.carus.pdfrenderer.services.PdfRendererService;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -23,10 +24,10 @@ import org.w3c.dom.Document;
 
 @RestController
 public class PdfRendererController {
-    private  final PdfRendererService rendererService;
-    private final HtmlValidationService htmlValidatorService;
+    private final PdfRenderer rendererService;
+    private final HtmlValidator htmlValidatorService;
 
-    PdfRendererController(PdfRendererService rendererService, PdfRendererService rendererService1,
+    PdfRendererController(PdfRenderer rendererService,
                           HtmlValidationService htmlValidator) {
         this.rendererService = rendererService;
         this.htmlValidatorService = htmlValidator;
