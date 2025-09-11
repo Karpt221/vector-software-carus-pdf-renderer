@@ -2,6 +2,8 @@ package com.example.carus.pdfrenderer.controllers;
 
 import com.example.carus.pdfrenderer.dtos.PdfRendererErrorResponseDto;
 import com.example.carus.pdfrenderer.dtos.PdfRendererRequestDto;
+import com.example.carus.pdfrenderer.exceptions.HtmlValidationException;
+import com.example.carus.pdfrenderer.exceptions.PdfGenerationException;
 import com.example.carus.pdfrenderer.services.PdfRendererService;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -11,6 +13,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,6 +26,24 @@ public class PdfRendererController {
     PdfRendererController(PdfRendererService service) {
         this.service = service;
     }
+
+    @ExceptionHandler(HtmlValidationException.class)
+    public ResponseEntity<PdfRendererErrorResponseDto> handleHtmlValidationException(HtmlValidationException ex) {
+        return new ResponseEntity<>(
+                new PdfRendererErrorResponseDto(HttpStatus.BAD_REQUEST, ex.getMessage(), ex.getCause().getMessage()),
+                HttpStatus.BAD_REQUEST
+        );
+    }
+
+    @ExceptionHandler(PdfGenerationException.class)
+    public ResponseEntity<PdfRendererErrorResponseDto> handlePdfGenerationException(PdfGenerationException ex) {
+        System.err.println("Error generating PDF: " + ex.getMessage());
+        return new ResponseEntity<>(
+                new PdfRendererErrorResponseDto(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), ex.getCause().getMessage()),
+                HttpStatus.INTERNAL_SERVER_ERROR
+        );
+    }
+
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
