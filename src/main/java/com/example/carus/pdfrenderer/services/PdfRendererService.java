@@ -1,41 +1,26 @@
 package com.example.carus.pdfrenderer.services;
 
-import com.example.carus.pdfrenderer.exceptions.HtmlValidationException;
 import com.example.carus.pdfrenderer.exceptions.PdfGenerationException;
-import org.jsoup.Jsoup;
-import org.jsoup.helper.W3CDom;
-import org.jsoup.nodes.Document;
+import com.example.carus.pdfrenderer.interfaces.PdfRenderer;
 import org.springframework.stereotype.Service;
 
+import org.w3c.dom.Document;
 import org.xhtmlrenderer.layout.SharedContext;
 import org.xhtmlrenderer.pdf.ITextRenderer;
-import org.xml.sax.SAXException;
 
 import java.io.*;
 
 @Service
-public class PdfRendererService {
-    private final HtmlValidationService htmlValidator;
+public class PdfRendererService implements PdfRenderer {
 
-    PdfRendererService(HtmlValidationService htmlValidator) {
-        this.htmlValidator = htmlValidator;
-    }
-
-    public byte[] pdfRender(String html) {
-        Document document = Jsoup.parse(html);
-        document.outputSettings().syntax(Document.OutputSettings.Syntax.xml);
-        try {
-            htmlValidator.validate(W3CDom.convert(document));
-        } catch (SAXException | IOException e) {
-            throw new HtmlValidationException("Invalid HTML provided", e);
-        }
+    public byte[] renderPdf(Document document) {
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             ITextRenderer renderer = new ITextRenderer();
             SharedContext sharedContext = renderer.getSharedContext();
             sharedContext.setPrint(true);
             sharedContext.setInteractive(false);
 
-            renderer.setDocumentFromString(document.html());
+            renderer.setDocument(document, "");
             renderer.layout();
             renderer.createPDF(outputStream);
 

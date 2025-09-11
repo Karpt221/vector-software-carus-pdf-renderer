@@ -4,6 +4,7 @@ import com.example.carus.pdfrenderer.dtos.PdfRendererErrorResponseDto;
 import com.example.carus.pdfrenderer.dtos.PdfRendererRequestDto;
 import com.example.carus.pdfrenderer.exceptions.HtmlValidationException;
 import com.example.carus.pdfrenderer.exceptions.PdfGenerationException;
+import com.example.carus.pdfrenderer.services.HtmlValidationService;
 import com.example.carus.pdfrenderer.services.PdfRendererService;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -17,14 +18,18 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.w3c.dom.Document;
 
 
 @RestController
 public class PdfRendererController {
-    private  final PdfRendererService service;
+    private  final PdfRendererService rendererService;
+    private final HtmlValidationService htmlValidatorService;
 
-    PdfRendererController(PdfRendererService service) {
-        this.service = service;
+    PdfRendererController(PdfRendererService rendererService, PdfRendererService rendererService1,
+                          HtmlValidationService htmlValidator) {
+        this.rendererService = rendererService;
+        this.htmlValidatorService = htmlValidator;
     }
 
     @ExceptionHandler(HtmlValidationException.class)
@@ -42,6 +47,15 @@ public class PdfRendererController {
                 new PdfRendererErrorResponseDto(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), ex.getCause().getMessage()),
                 HttpStatus.INTERNAL_SERVER_ERROR
         );
+    }
+
+    private HttpHeaders getPdfHeaders(){
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        final String filename = "rendered-document.pdf";
+        headers.setContentDispositionFormData(filename, filename);
+        headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+        return headers;
     }
 
     @ApiResponses(value = {
@@ -62,13 +76,10 @@ public class PdfRendererController {
                     description = "Failed to generate PDF")
     })
     @PostMapping("/pdf-render")
-    public ResponseEntity<?> pdfRender(@RequestBody PdfRendererRequestDto body){
-        final byte[] pdf = service.pdfRender(body.content());
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_PDF);
-        final String filename = "rendered-document.pdf";
-        headers.setContentDispositionFormData(filename, filename);
-        headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+    public ResponseEntity<?> renderPdf(@RequestBody PdfRendererRequestDto body){
+        Document document = htmlValidatorService.validate(body.content());
+        final byte[] pdf = rendererService.renderPdf(document);
+        HttpHeaders headers = getPdfHeaders();
 
         return new ResponseEntity<>(pdf, headers, HttpStatus.OK);
     }
