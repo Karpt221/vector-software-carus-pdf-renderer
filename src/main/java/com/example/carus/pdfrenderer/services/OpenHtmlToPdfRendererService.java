@@ -16,7 +16,6 @@ import java.nio.file.FileSystems;
 public class OpenHtmlToPdfRendererService implements PdfRenderer {
 
     public byte[] renderPdf(Document document) {
-        System.out.println("OpenHtmlToPdfRendererService");
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             String baseUrl = FileSystems.getDefault()
                     .getPath("src/main/resources/static/")
