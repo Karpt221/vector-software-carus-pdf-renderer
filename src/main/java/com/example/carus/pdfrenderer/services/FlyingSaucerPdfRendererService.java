@@ -23,12 +23,14 @@ public class FlyingSaucerPdfRendererService implements PdfRenderer {
             String baseUrl = FileSystems.getDefault()
                     .getPath("src/main/resources/static/")
                     .toUri().toURL().toString();
+            CustomUserAgent userAgent = new CustomUserAgent(renderer.getOutputDevice(), baseUrl);
+            sharedContext.setUserAgentCallback(userAgent);
             renderer.setDocument(document, baseUrl);
             renderer.layout();
             renderer.createPDF(outputStream);
 
             return outputStream.toByteArray();
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new PdfGenerationException("Failed to generate PDF", e);
         }
     }

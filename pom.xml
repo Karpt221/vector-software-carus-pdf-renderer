@@ -28,6 +28,7 @@
 	</scm>
 	<properties>
 		<java.version>21</java.version>
+        <openhtml.version>1.0.10</openhtml.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -59,6 +60,21 @@
             <artifactId>flying-saucer-pdf</artifactId>
             <version>10.0.0</version>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.openhtmltopdf/openhtmltopdf-pdfbox -->
+        <dependency>
+            <groupId>com.openhtmltopdf</groupId>
+            <artifactId>openhtmltopdf-pdfbox</artifactId>
+            <version>${openhtml.version}</version>
+        </dependency>
+
+        <dependency>
+            <!-- Optional, leave out if you do not need SVG support. -->
+            <groupId>com.openhtmltopdf</groupId>
+            <artifactId>openhtmltopdf-svg-support</artifactId>
+            <version>${openhtml.version}</version>
+        </dependency>
+
 	</dependencies>
 
 	<build>
