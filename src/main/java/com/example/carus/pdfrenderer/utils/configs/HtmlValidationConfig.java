@@ -1,4 +1,4 @@
-package com.example.carus.pdfrenderer.configs;
+package com.example.carus.pdfrenderer.utils.configs;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

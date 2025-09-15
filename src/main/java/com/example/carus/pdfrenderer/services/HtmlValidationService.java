@@ -1,6 +1,6 @@
 package com.example.carus.pdfrenderer.services;
 
-import com.example.carus.pdfrenderer.exceptions.HtmlValidationException;
+import com.example.carus.pdfrenderer.utils.exceptions.HtmlValidationException;
 import com.example.carus.pdfrenderer.interfaces.HtmlValidator;
 import org.jsoup.Jsoup;
 import org.jsoup.helper.W3CDom;

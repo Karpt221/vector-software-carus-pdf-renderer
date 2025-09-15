@@ -1,4 +1,4 @@
-package com.example.carus.pdfrenderer.exceptions;
+package com.example.carus.pdfrenderer.utils.exceptions;
 
 public class PdfGenerationException extends RuntimeException{
     public PdfGenerationException(String message, Throwable cause) {

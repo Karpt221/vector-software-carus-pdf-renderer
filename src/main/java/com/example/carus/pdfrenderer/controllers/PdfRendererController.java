@@ -1,9 +1,10 @@
 package com.example.carus.pdfrenderer.controllers;
 
-import com.example.carus.pdfrenderer.dtos.PdfRendererErrorResponseDto;
-import com.example.carus.pdfrenderer.dtos.PdfRendererRequestDto;
-import com.example.carus.pdfrenderer.exceptions.HtmlValidationException;
-import com.example.carus.pdfrenderer.exceptions.PdfGenerationException;
+import com.example.carus.pdfrenderer.services.RequestLoggerService;
+import com.example.carus.pdfrenderer.utils.dtos.PdfRendererErrorResponseDto;
+import com.example.carus.pdfrenderer.utils.dtos.PdfRendererRequestDto;
+import com.example.carus.pdfrenderer.utils.exceptions.HtmlValidationException;
+import com.example.carus.pdfrenderer.utils.exceptions.PdfGenerationException;
 import com.example.carus.pdfrenderer.interfaces.HtmlValidator;
 import com.example.carus.pdfrenderer.interfaces.PdfRenderer;
 import com.example.carus.pdfrenderer.services.HtmlValidationService;
@@ -26,15 +27,18 @@ import org.w3c.dom.Document;
 public class PdfRendererController {
     private final PdfRenderer rendererService;
     private final HtmlValidator htmlValidatorService;
+    private final RequestLoggerService requestLogger;
 
     PdfRendererController(PdfRenderer rendererService,
-                          HtmlValidationService htmlValidator) {
+                          HtmlValidationService htmlValidator, RequestLoggerService requestLogger) {
         this.rendererService = rendererService;
         this.htmlValidatorService = htmlValidator;
+        this.requestLogger = requestLogger;
     }
 
     @ExceptionHandler(HtmlValidationException.class)
     public ResponseEntity<PdfRendererErrorResponseDto> handleHtmlValidationException(HtmlValidationException ex) {
+        requestLogger.logErrorRequest(ex.getMessage());
         return new ResponseEntity<>(
                 new PdfRendererErrorResponseDto(HttpStatus.BAD_REQUEST, ex.getMessage(), ex.getCause().getMessage()),
                 HttpStatus.BAD_REQUEST
@@ -43,7 +47,7 @@ public class PdfRendererController {
 
     @ExceptionHandler(PdfGenerationException.class)
     public ResponseEntity<PdfRendererErrorResponseDto> handlePdfGenerationException(PdfGenerationException ex) {
-        System.err.println("Error generating PDF: " + ex.getMessage());
+        requestLogger.logErrorRequest(ex.getMessage());
         return new ResponseEntity<>(
                 new PdfRendererErrorResponseDto(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), ex.getCause().getMessage()),
                 HttpStatus.INTERNAL_SERVER_ERROR
@@ -81,7 +85,7 @@ public class PdfRendererController {
         Document document = htmlValidatorService.validate(body.content());
         final byte[] pdf = rendererService.renderPdf(document);
         HttpHeaders headers = getPdfHeaders();
-
+        requestLogger.logSuccessfulRequest();
         return new ResponseEntity<>(pdf, headers, HttpStatus.OK);
     }
 }

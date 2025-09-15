@@ -1,6 +1,6 @@
 package com.example.carus.pdfrenderer.services;
 
-import com.example.carus.pdfrenderer.exceptions.PdfGenerationException;
+import com.example.carus.pdfrenderer.utils.exceptions.PdfGenerationException;
 import com.example.carus.pdfrenderer.interfaces.PdfRenderer;
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 import com.openhtmltopdf.svgsupport.BatikSVGDrawer;
