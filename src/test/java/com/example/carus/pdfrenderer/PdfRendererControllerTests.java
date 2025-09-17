@@ -4,6 +4,7 @@ import com.example.carus.pdfrenderer.controllers.PdfRendererController;
 import com.example.carus.pdfrenderer.interfaces.HtmlParser;
 import com.example.carus.pdfrenderer.interfaces.HtmlValidator;
 import com.example.carus.pdfrenderer.interfaces.PdfRenderer;
+import com.example.carus.pdfrenderer.services.JsoupHtmlParserService;
 import com.example.carus.pdfrenderer.services.RequestLoggerService;
 import com.example.carus.pdfrenderer.utils.exceptions.HtmlValidationException;
 import com.example.carus.pdfrenderer.utils.exceptions.PdfGenerationException;
@@ -36,10 +37,11 @@ public class PdfRendererControllerTests {
     @MockitoBean
     private RequestLoggerService requestLogger;
 
+    HtmlParser parser = new JsoupHtmlParserService();
 
     @Test
     public void returnsPdfOnValidRequest() throws Exception {
-        Document mockDocument = W3CDom.convert(Jsoup.parse("mock document"));
+        Document mockDocument = parser.parse("mock document");
 
         when(htmlParser.parse(any(String.class))).thenReturn(mockDocument);
 
@@ -60,7 +62,7 @@ public class PdfRendererControllerTests {
 
     @Test
     public void returnsBadRequestWhenHtmlValidationFailed() throws Exception {
-        Document mockDocument = W3CDom.convert(Jsoup.parse("mock document"));
+        Document mockDocument = parser.parse("mock document");
 
         when(htmlParser.parse(any(String.class))).thenReturn(mockDocument);
 
@@ -79,7 +81,7 @@ public class PdfRendererControllerTests {
 
     @Test
     public void returnsInternalServerErrorWhenRenderingFails() throws Exception {
-        Document mockDocument = W3CDom.convert(Jsoup.parse("mock document"));
+        Document mockDocument = parser.parse("mock document");
 
         when(htmlParser.parse(any(String.class))).thenReturn(mockDocument);
 
