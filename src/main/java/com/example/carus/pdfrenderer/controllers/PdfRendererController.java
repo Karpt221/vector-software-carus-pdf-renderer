@@ -1,5 +1,6 @@
 package com.example.carus.pdfrenderer.controllers;
 
+import com.example.carus.pdfrenderer.interfaces.HtmlParser;
 import com.example.carus.pdfrenderer.services.RequestLoggerService;
 import com.example.carus.pdfrenderer.utils.dtos.PdfRendererErrorResponseDto;
 import com.example.carus.pdfrenderer.utils.dtos.PdfRendererRequestDto;
@@ -7,7 +8,6 @@ import com.example.carus.pdfrenderer.utils.exceptions.HtmlValidationException;
 import com.example.carus.pdfrenderer.utils.exceptions.PdfGenerationException;
 import com.example.carus.pdfrenderer.interfaces.HtmlValidator;
 import com.example.carus.pdfrenderer.interfaces.PdfRenderer;
-import com.example.carus.pdfrenderer.services.HtmlValidationService;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -25,15 +25,17 @@ import org.w3c.dom.Document;
 
 @RestController
 public class PdfRendererController {
-    private final PdfRenderer rendererService;
-    private final HtmlValidator htmlValidatorService;
+    private final PdfRenderer renderer;
+    private final HtmlValidator htmlValidator;
     private final RequestLoggerService requestLogger;
+    private final HtmlParser htmlParser;
 
-    PdfRendererController(PdfRenderer rendererService,
-                          HtmlValidationService htmlValidator, RequestLoggerService requestLogger) {
-        this.rendererService = rendererService;
-        this.htmlValidatorService = htmlValidator;
+    PdfRendererController(PdfRenderer renderer,
+                          HtmlValidator htmlValidator, RequestLoggerService requestLogger, HtmlParser htmlParser) {
+        this.renderer = renderer;
+        this.htmlValidator = htmlValidator;
         this.requestLogger = requestLogger;
+        this.htmlParser = htmlParser;
     }
 
     @ExceptionHandler(HtmlValidationException.class)
@@ -82,8 +84,9 @@ public class PdfRendererController {
     })
     @PostMapping("/pdf-render")
     public ResponseEntity<?> renderPdf(@RequestBody PdfRendererRequestDto body){
-        Document document = htmlValidatorService.validate(body.content());
-        final byte[] pdf = rendererService.renderPdf(document);
+        Document document = htmlParser.parse(body.content());
+        htmlValidator.validate(document);
+        final byte[] pdf = renderer.renderPdf(document);
         HttpHeaders headers = getPdfHeaders();
         requestLogger.logSuccessfulRequest();
         return new ResponseEntity<>(pdf, headers, HttpStatus.OK);
