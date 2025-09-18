@@ -8,6 +8,7 @@ mvnw
 mvnw.cmd
 .mvn
 application.properties
+.log
 
 ### STS ###
 .apt_generated
