@@ -1,5 +1,6 @@
 package com.example.carus.pdfrenderer.services;
 
+import com.example.carus.pdfrenderer.utils.enums.PdfRendererExceptionMessage;
 import com.example.carus.pdfrenderer.utils.exceptions.HtmlValidationException;
 import com.example.carus.pdfrenderer.interfaces.HtmlValidator;
 import org.springframework.stereotype.Service;
@@ -24,7 +25,7 @@ public class HtmlValidationService implements HtmlValidator {
             Validator validator = this.schema.newValidator();
             validator.validate(new DOMSource(document));
         } catch (SAXException | IOException e) {
-            throw new HtmlValidationException("Invalid HTML provided", e);
+            throw new HtmlValidationException(PdfRendererExceptionMessage.INVALID_HTML.getMessage(), e);
         }
     }
 }

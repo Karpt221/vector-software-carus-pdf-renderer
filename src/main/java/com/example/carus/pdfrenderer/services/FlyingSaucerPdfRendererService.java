@@ -1,5 +1,6 @@
 package com.example.carus.pdfrenderer.services;
 
+import com.example.carus.pdfrenderer.utils.enums.PdfRendererExceptionMessage;
 import com.example.carus.pdfrenderer.utils.exceptions.PdfGenerationException;
 import com.example.carus.pdfrenderer.interfaces.PdfRenderer;
 import org.springframework.stereotype.Service;
@@ -29,7 +30,7 @@ public class FlyingSaucerPdfRendererService implements PdfRenderer {
 
             return outputStream.toByteArray();
         } catch (Exception e) {
-            throw new PdfGenerationException("Failed to generate PDF", e);
+            throw new PdfGenerationException(PdfRendererExceptionMessage.FAILED_TO_GENERATE_PDF.getMessage(), e);
         }
     }
 }
