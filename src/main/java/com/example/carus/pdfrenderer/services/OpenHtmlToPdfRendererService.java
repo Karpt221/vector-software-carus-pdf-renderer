@@ -5,7 +5,7 @@ import com.example.carus.pdfrenderer.utils.exceptions.PdfGenerationException;
 import com.example.carus.pdfrenderer.interfaces.PdfRenderer;
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 import com.openhtmltopdf.svgsupport.BatikSVGDrawer;
-import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 
@@ -13,7 +13,7 @@ import java.io.ByteArrayOutputStream;
 import java.nio.file.FileSystems;
 
 @Service
-@Primary
+@Profile("open_html_to_pdf")
 public class OpenHtmlToPdfRendererService implements PdfRenderer {
 
     public byte[] renderPdf(Document document) {

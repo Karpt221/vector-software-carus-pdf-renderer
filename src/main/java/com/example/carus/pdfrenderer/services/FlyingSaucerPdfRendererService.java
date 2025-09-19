@@ -3,6 +3,7 @@ package com.example.carus.pdfrenderer.services;
 import com.example.carus.pdfrenderer.utils.enums.PdfRendererExceptionMessage;
 import com.example.carus.pdfrenderer.utils.exceptions.PdfGenerationException;
 import com.example.carus.pdfrenderer.interfaces.PdfRenderer;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import org.w3c.dom.Document;
@@ -13,6 +14,7 @@ import java.io.*;
 import java.nio.file.FileSystems;
 
 @Service
+@Profile("flying_saucer")
 public class FlyingSaucerPdfRendererService implements PdfRenderer {
 
     public byte[] renderPdf(Document document) {
