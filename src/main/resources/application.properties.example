@@ -1,0 +1,11 @@
+spring.application.name=carus
+springdoc.swagger-ui.path=/docs
+spring.data.mongodb.uri=connection_string
+spring.data.mongodb.database=carus_pdf_renderer
+spring.data.mongodb.auto-index-creation=true
+logging.level.root=INFO
+logging.file.name=logs/carus.log
+logging.logback.rollingpolicy.file-name-pattern=logs/archive/carus.%d{yyyy-MM-dd}.%i.log
+logging.logback.rollingpolicy.max-file-size=10MB
+logging.logback.rollingpolicy.max-history=7
+logging.logback.rollingpolicy.total-size-cap=100MB
