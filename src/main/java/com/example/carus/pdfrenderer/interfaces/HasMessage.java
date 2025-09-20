@@ -1,4 +1,4 @@
-package com.example.carus.utils.interfaces;
+package com.example.carus.pdfrenderer.interfaces;
 
 public interface HasMessage {
     String getMessage();

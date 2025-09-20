@@ -1,7 +1,9 @@
 package com.example.carus.pdfrenderer.utils.enums;
 
-import com.example.carus.utils.interfaces.HasMessage;
+import com.example.carus.pdfrenderer.interfaces.HasMessage;
+import lombok.Getter;
 
+@Getter
 public enum PdfRendererExceptionMessage implements HasMessage {
     INVALID_HTML("Invalid HTML provided"),
     FAILED_TO_GENERATE_PDF("Failed to generate PDF");
@@ -12,7 +14,4 @@ public enum PdfRendererExceptionMessage implements HasMessage {
         this.message = message;
     }
 
-    public String getMessage() {
-        return message;
-    }
 }

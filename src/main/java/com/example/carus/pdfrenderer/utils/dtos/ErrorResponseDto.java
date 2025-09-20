@@ -1,4 +1,4 @@
-package com.example.carus.utils.dtos;
+package com.example.carus.pdfrenderer.utils.dtos;
 
 import org.springframework.http.HttpStatus;
 

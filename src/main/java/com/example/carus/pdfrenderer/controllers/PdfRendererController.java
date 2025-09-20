@@ -1,62 +1,40 @@
 package com.example.carus.pdfrenderer.controllers;
 
+import com.example.carus.openapi.api.PdfRenderApiDelegate;
+import com.example.carus.openapi.model.PdfRendererRequestDto;
 import com.example.carus.pdfrenderer.interfaces.HtmlParser;
 import com.example.carus.pdfrenderer.interfaces.HtmlValidator;
 import com.example.carus.pdfrenderer.interfaces.PdfRenderer;
-import com.example.carus.pdfrenderer.services.DbRequestLoggerService;
-import com.example.carus.utils.dtos.ErrorResponseDto;
-import com.example.carus.pdfrenderer.utils.dtos.PdfRendererRequestDto;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import com.example.carus.pdfrenderer.services.RequestLoggerService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 
-
-@RestController
+@Component
 @Slf4j
-public class PdfRendererController {
+public class PdfRendererController implements PdfRenderApiDelegate {
     private final PdfRenderer renderer;
     private final HtmlValidator htmlValidator;
-    private final DbRequestLoggerService dbLogger;
+    private final RequestLoggerService dbLogger;
     private final HtmlParser htmlParser;
 
     public PdfRendererController(PdfRenderer renderer,
-                                 HtmlValidator htmlValidator, DbRequestLoggerService dbLogger, HtmlParser htmlParser) {
+                                 HtmlValidator htmlValidator, RequestLoggerService dbLogger, HtmlParser htmlParser) {
         this.renderer = renderer;
         this.htmlValidator = htmlValidator;
         this.dbLogger = dbLogger;
         this.htmlParser = htmlParser;
     }
 
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "PDF document successfully rendered",
-                    content = @Content(
-                            mediaType = "application/pdf",
-                            schema = @Schema(type = "string", format = "binary"))),
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "Invalid HTML or document structure",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponseDto.class))),
-            @ApiResponse(
-                    responseCode = "500",
-                    description = "Failed to generate PDF")
-    })
-    @PostMapping("/pdf-render")
-    public ResponseEntity<?> renderPdf(@RequestBody PdfRendererRequestDto body) {
-        Document document = htmlParser.parse(body.content());
+    @Override
+    public ResponseEntity<Resource> renderPdf(PdfRendererRequestDto pdfRendererRequestDto) {
+        Document document = htmlParser.parse(pdfRendererRequestDto.getContent());
         log.info("HTML parsed successfully");
         htmlValidator.validate(document);
         log.info("HTML validated successfully");
@@ -65,7 +43,8 @@ public class PdfRendererController {
         HttpHeaders headers = getPdfHeaders();
         dbLogger.logSuccessfulRequest();
         log.info("Sending PDF in response");
-        return new ResponseEntity<>(pdf, headers, HttpStatus.OK);
+        ByteArrayResource resource = new ByteArrayResource(pdf);
+        return new ResponseEntity<>(resource, headers, HttpStatus.OK);
     }
 
     private HttpHeaders getPdfHeaders() {

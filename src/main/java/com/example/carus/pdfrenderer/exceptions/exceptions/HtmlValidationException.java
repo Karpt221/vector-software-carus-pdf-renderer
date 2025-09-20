@@ -1,4 +1,4 @@
-package com.example.carus.pdfrenderer.utils.exceptions;
+package com.example.carus.pdfrenderer.exceptions.exceptions;
 
 public class HtmlValidationException extends RuntimeException {
     public HtmlValidationException(String message, Throwable cause) {

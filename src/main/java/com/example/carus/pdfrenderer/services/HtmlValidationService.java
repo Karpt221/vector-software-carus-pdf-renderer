@@ -1,8 +1,8 @@
 package com.example.carus.pdfrenderer.services;
 
-import com.example.carus.pdfrenderer.utils.enums.PdfRendererExceptionMessage;
-import com.example.carus.pdfrenderer.utils.exceptions.HtmlValidationException;
 import com.example.carus.pdfrenderer.interfaces.HtmlValidator;
+import com.example.carus.pdfrenderer.utils.enums.PdfRendererExceptionMessage;
+import com.example.carus.pdfrenderer.exceptions.exceptions.HtmlValidationException;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;

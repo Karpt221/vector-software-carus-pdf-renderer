@@ -4,7 +4,7 @@ import com.example.carus.pdfrenderer.interfaces.HtmlParser;
 import com.example.carus.pdfrenderer.services.HtmlValidationService;
 import com.example.carus.pdfrenderer.services.JsoupHtmlParserService;
 import com.example.carus.pdfrenderer.utils.configs.HtmlValidationConfig;
-import com.example.carus.pdfrenderer.utils.exceptions.HtmlValidationException;
+import com.example.carus.pdfrenderer.exceptions.exceptions.HtmlValidationException;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;

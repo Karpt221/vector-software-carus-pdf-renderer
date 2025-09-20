@@ -1,8 +1,8 @@
 package com.example.carus.pdfrenderer.services;
 
-import com.example.carus.pdfrenderer.utils.enums.PdfRendererExceptionMessage;
-import com.example.carus.pdfrenderer.utils.exceptions.PdfGenerationException;
 import com.example.carus.pdfrenderer.interfaces.PdfRenderer;
+import com.example.carus.pdfrenderer.utils.enums.PdfRendererExceptionMessage;
+import com.example.carus.pdfrenderer.exceptions.exceptions.PdfGenerationException;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
