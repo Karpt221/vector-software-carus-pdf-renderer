@@ -1,0 +1,56 @@
+openapi: 3.0.0
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+  - url: 'http://localhost:8080'
+    description: Generated server url
+paths:
+  /pdf-render:
+    post:
+      tags:
+        - pdf-renderer-controller
+      operationId: renderPdf
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PdfRendererRequestDto'
+        required: true
+      responses:
+        '200':
+          description: PDF document successfully rendered
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        '400':
+          description: Invalid HTML or document structure
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDto'
+        '500':
+          description: Failed to generate PDF
+          content:
+            '*/*':
+              schema:
+                type: object
+components:
+  schemas:
+    PdfRendererRequestDto:
+      type: object
+      properties:
+        content:
+          type: string
+    ErrorResponseDto:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+            - 400 BAD_REQUEST
+            - 500 INTERNAL_SERVER_ERROR
+        message:
+          type: string
